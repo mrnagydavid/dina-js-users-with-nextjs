@@ -1,4 +1,9 @@
+'use client'
+import { useState } from 'react'
+
 export default function UsersPage() {
+  const [page, setPage] = useState(1)
+
   return (
     <>
       <div className="m-2 overflow-hidden rounded-lg border border-slate-100 dark:border-slate-900 md:w-3/4 lg:w-1/2">
@@ -30,6 +35,78 @@ export default function UsersPage() {
           </tbody>
         </table>
       </div>
+
+      <Paginator
+        pageCount={100}
+        currentPage={page}
+        containerClassName="w-full md:w-3/4 lg:w-1/2 flex flex-row justify-between"
+        stepperClassName="flex-none w-12 h-12 flex items-center justify-center cursor-pointer"
+        itemClassName="w-12 h-12 flex items-center justify-center cursor-pointer"
+        breakClassName="w-12 h-12 flex items-center justify-center"
+        currentPageItemClassName="font-bold"
+        handlePageChange={(requestedPage) => setPage(requestedPage)}
+      />
     </>
   )
+
+  function Paginator(props: PaginatorProps) {
+    const {
+      pageCount,
+      currentPage,
+      containerClassName,
+      stepperClassName,
+      itemClassName,
+      breakClassName,
+      currentPageItemClassName,
+      handlePageChange,
+    } = props
+
+    const previousPage = Math.max(1, currentPage - 1)
+    const nextPage = Math.min(pageCount, currentPage + 1)
+
+    const PageNumberComponents = []
+
+    for (let i = 1; i <= pageCount; i++) {
+      if (i === 1 || i === pageCount || (i >= currentPage - 2 && i <= currentPage + 2)) {
+        const className = currentPage === i ? `${itemClassName} ${currentPageItemClassName}` : itemClassName
+
+        PageNumberComponents.push(
+          <div key={`page-${i}`} className={className} onClick={() => handlePageChange(i)}>
+            {i}
+          </div>,
+        )
+      } else if (i === currentPage - 3 || i === currentPage + 3) {
+        PageNumberComponents.push(
+          <div key={`page-break-${i}`} className={breakClassName}>
+            ...
+          </div>,
+        )
+      }
+    }
+
+    return (
+      <div className={containerClassName}>
+        <div key={`page-back`} className={stepperClassName} onClick={() => handlePageChange(previousPage)}>
+          &lt;
+        </div>
+
+        {PageNumberComponents}
+
+        <div key={`page-next`} className={stepperClassName} onClick={() => handlePageChange(nextPage)}>
+          &gt;
+        </div>
+      </div>
+    )
+  }
+
+  type PaginatorProps = {
+    pageCount: number
+    currentPage: number
+    containerClassName: string
+    stepperClassName: string
+    itemClassName: string
+    breakClassName: string
+    currentPageItemClassName: string
+    handlePageChange: (requestedPage: number) => void
+  }
 }
