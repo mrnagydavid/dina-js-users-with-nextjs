@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+const BASE_URL = 'https://assessment-users-backend-node.herokuapp.com/users'
+
 export async function getUsers(params: GetUsersParams = {}) {
-  const result = await axios.get('https://assessment-users-backend-node.herokuapp.com/users', {
+  const result = await axios.get(BASE_URL, {
     params: {
       page: params.page ?? 1,
       page_size: params.page_size ?? 10,
@@ -9,6 +11,11 @@ export async function getUsers(params: GetUsersParams = {}) {
   })
 
   return result.data as GetUsersResponse
+}
+
+export async function getUser(id: number) {
+  const result = await axios.get(`${BASE_URL}/${id}`)
+  return result.data
 }
 
 export type GetUsersParams = {

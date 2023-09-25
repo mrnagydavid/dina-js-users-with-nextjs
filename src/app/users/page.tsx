@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getUsers, User } from '@/api'
+import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator'
 
 export default function UsersPage() {
   const [page, setPage] = useState(1)
@@ -16,9 +17,7 @@ export default function UsersPage() {
   return (
     <>
       <div className="relative m-2 overflow-hidden rounded-lg border border-slate-100 dark:border-slate-900 md:w-3/4 lg:w-1/2">
-        {(isLoading || isPreviousData) && (
-          <div className="absolute left-0 right-0 m-auto h-24 w-24 animate-spin text-8xl ">&#x21bb;</div>
-        )}
+        {(isLoading || isPreviousData) && <LoadingIndicator className="absolute left-0 right-0 m-auto" />}
 
         <table className="w-full table-fixed">
           <thead className="border-b-2 bg-slate-400 dark:bg-slate-800">
