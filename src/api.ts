@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from './axios'
 
 const BASE_URL = 'https://assessment-users-backend-node.herokuapp.com/users'
 
@@ -15,7 +15,12 @@ export async function getUsers(params: GetUsersParams = {}) {
 
 export async function getUser(id: number) {
   const result = await axios.get(`${BASE_URL}/${id}`)
-  return result.data
+  return result.data as User
+}
+
+export async function postUser(params: PostUserParams) {
+  const result = await axios.post(BASE_URL, params)
+  return result.data as PostUserSuccess
 }
 
 export type GetUsersParams = {
@@ -30,6 +35,22 @@ export type GetUsersResponse = {
     page: number
     page_size: number
   }
+}
+
+export type GetUserSuccess = User
+
+export type PostUserParams = {
+  first_name: string
+  last_name: string
+  status: string
+}
+
+export type PostUserSuccess = User
+
+export type PostUserBadInputError = {
+  first_name?: string[]
+  last_name?: string[]
+  status?: string
 }
 
 export type User = {

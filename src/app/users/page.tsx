@@ -1,14 +1,13 @@
 'use client'
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { getUsers, User } from '@/api'
+import Link from 'next/link'
+import { User } from '@/api'
 import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator'
+import { useGetUsersQuery } from '@/data'
 
 export default function UsersPage() {
   const [page, setPage] = useState(1)
-  const { data, isLoading, isPreviousData } = useQuery(['users', page], () => getUsers({ page }), {
-    keepPreviousData: true,
-  })
+  const { data, isLoading, isPreviousData } = useGetUsersQuery({ page })
 
   const users = data?.data ?? []
   const meta = data?.meta ?? { count: 1, page_size: 10 }
@@ -17,7 +16,7 @@ export default function UsersPage() {
   return (
     <>
       <div className="relative m-2 overflow-hidden rounded-lg border border-slate-100 dark:border-slate-900 md:w-3/4 lg:w-1/2">
-        {(isLoading || isPreviousData) && <LoadingIndicator className="absolute left-0 right-0 m-auto" />}
+        {(isLoading || isPreviousData) && <LoadingIndicator className="absolute left-0 right-0 m-auto mt-8" />}
 
         <table className="w-full table-fixed">
           <thead className="border-b-2 bg-slate-400 dark:bg-slate-800">
@@ -56,6 +55,17 @@ export default function UsersPage() {
         currentPageItemClassName="font-bold"
         handlePageChange={(requestedPage) => setPage(requestedPage)}
       />
+
+      <div className="mt-2 flex justify-center align-middle md:w-3/4 lg:w-1/2">
+        <Link href="/users/new">
+          <button
+            type="button"
+            className="min-w-14 w-fit border-slate-100 bg-slate-300 p-2 hover:bg-slate-400 dark:border-slate-700 dark:bg-slate-600"
+          >
+            Add new user
+          </button>
+        </Link>
+      </div>
     </>
   )
 
