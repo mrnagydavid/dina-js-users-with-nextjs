@@ -6,6 +6,7 @@ let axios = axiosModule.create()
 export default {
   get: (url: string, config?: AxiosRequestConfig<any>) => getWrapper(axios, url, config),
   post: (url: string, data?: any, config?: AxiosRequestConfig<any>) => postWrapper(axios, url, data, config),
+  put: (url: string, data?: any, config?: AxiosRequestConfig<any>) => putWrapper(axios, url, data, config),
 }
 
 async function getWrapper<SuccessType, ErrorType>(axios: AxiosInstance, url: string, config?: AxiosRequestConfig<any>) {
@@ -27,6 +28,22 @@ async function getWrapper<SuccessType, ErrorType>(axios: AxiosInstance, url: str
 async function postWrapper(axios: AxiosInstance, url: string, data?: any, config?: AxiosRequestConfig<any>) {
   try {
     const response = await axios.post(url, data, config)
+    return {
+      success: true,
+      data: response.data,
+    }
+  } catch (error: any) {
+    if (isAxiosError(error)) {
+      handleAxiosError(error)
+    }
+
+    throw error
+  }
+}
+
+async function putWrapper(axios: AxiosInstance, url: string, data?: any, config?: AxiosRequestConfig<any>) {
+  try {
+    const response = await axios.put(url, data, config)
     return {
       success: true,
       data: response.data,

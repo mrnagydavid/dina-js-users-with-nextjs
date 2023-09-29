@@ -3,12 +3,16 @@ import {
   getUsers,
   getUser,
   postUser,
+  putUser,
   GetUsersParams,
   GetUsersResponse,
   GetUserSuccess,
   PostUserParams,
   PostUserBadInputError,
   PostUserSuccess,
+  PutUserSuccess,
+  PutUserBadInputError,
+  PutUserParams,
 } from './api'
 import { notFound } from 'next/navigation'
 
@@ -22,9 +26,7 @@ export function useGetUsersQuery(params: GetUsersParams = {}) {
   })
 }
 
-export function useGetUserQuery(userIdParam: string) {
-  const userId = parseInt(userIdParam)
-
+export function useGetUserQuery(userId: number) {
   const query = useQuery<GetUserSuccess, any>({
     queryKey: ['users', userId],
     queryFn: () => getUser(userId),
@@ -32,15 +34,11 @@ export function useGetUserQuery(userIdParam: string) {
       id: 0,
       first_name: 'n/a',
       last_name: 'n/a',
-      status: 'n/a',
+      status: 'active',
       created_at: 'n/a',
       updated_at: 'n/a',
     },
   })
-
-  if (isNaN(userId) || userId < 0) {
-    notFound()
-  }
 
   if (query.error === 'NOT_FOUND') {
     notFound()
@@ -56,6 +54,17 @@ export function useCreateUserMutation(params: UseCreateUserMutationParams = {}) 
   })
 }
 
+export function useUpdateUserMutation(params: UseUpdateUserMutationParams = {}) {
+  return useMutation<PutUserSuccess, PutUserBadInputError, PutUserParams>({
+    mutationFn: (params: PutUserParams) => putUser(params),
+    onSuccess: params.onSuccess,
+  })
+}
+
 export type UseCreateUserMutationParams = {
+  onSuccess?: () => void
+}
+
+export type UseUpdateUserMutationParams = {
   onSuccess?: () => void
 }

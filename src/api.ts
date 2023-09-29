@@ -23,6 +23,11 @@ export async function postUser(params: PostUserParams) {
   return result.data as PostUserSuccess
 }
 
+export async function putUser(params: PutUserParams) {
+  const result = await axios.put(`${BASE_URL}/${params.id}`, params)
+  return result.data as PutUserSuccess
+}
+
 export type GetUsersParams = {
   page?: number
   page_size?: number
@@ -53,11 +58,26 @@ export type PostUserBadInputError = {
   status?: string
 }
 
-export type User = {
+export type PutUserParams = {
   id: number
   first_name: string
   last_name: string
   status: string
+}
+
+export type PutUserSuccess = User
+
+export type PutUserBadInputError = {
+  first_name?: string[]
+  last_name?: string[]
+  status?: string
+}
+
+export type User = {
+  id: number
+  first_name: string
+  last_name: string
+  status: 'active' | 'locked'
   created_at: string
   updated_at: string
 }
