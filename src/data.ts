@@ -13,6 +13,7 @@ import {
   PutUserSuccess,
   PutUserBadInputError,
   PutUserParams,
+  User,
 } from './api'
 import { notFound } from 'next/navigation'
 
@@ -62,9 +63,9 @@ export function useUpdateUserMutation(params: UseUpdateUserMutationParams = {}) 
 }
 
 export type UseCreateUserMutationParams = {
-  onSuccess?: () => void
+  onSuccess?: (data: User, variables: PostUserParams, context: any) => void
 }
 
 export type UseUpdateUserMutationParams = {
-  onSuccess?: () => void
+  onSuccess?: (data: User, variables: PutUserParams, context: any) => void
 }

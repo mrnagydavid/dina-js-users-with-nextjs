@@ -55,7 +55,7 @@ export type PostUserSuccess = User
 export type PostUserBadInputError = {
   first_name?: string[]
   last_name?: string[]
-  status?: string
+  status?: string[]
 }
 
 export type PutUserParams = {
