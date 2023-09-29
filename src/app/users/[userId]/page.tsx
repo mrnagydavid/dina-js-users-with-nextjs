@@ -60,7 +60,7 @@ export default function UserPage(props: UserPageProps) {
         <Link href={`/users/${userId}/edit`}>
           <button
             type="button"
-            className="min-w-14 w-fit border-slate-100 bg-slate-300 p-2 hover:bg-slate-400 dark:border-slate-700 dark:bg-slate-600"
+            className="min-w-14 w-fit border border-slate-100 bg-slate-300 p-2 hover:bg-slate-400 dark:border-slate-700 dark:bg-slate-600"
           >
             Edit user
           </button>

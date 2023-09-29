@@ -29,7 +29,7 @@ export function useGetUsersQuery(params: GetUsersParams = {}) {
 
 export function useGetUserQuery(userId: number) {
   const query = useQuery<GetUserSuccess, any>({
-    queryKey: ['users', userId],
+    queryKey: ['user', userId],
     queryFn: () => getUser(userId),
     placeholderData: {
       id: 0,

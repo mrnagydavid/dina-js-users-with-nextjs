@@ -7,6 +7,7 @@ export async function getUsers(params: GetUsersParams = {}) {
     params: {
       page: params.page ?? 1,
       page_size: params.page_size ?? 10,
+      order_by: [{ created_at: 'asc' }],
     },
   })
 

@@ -94,7 +94,7 @@ export default function UserEditorForm(props: UserEditorFormProps) {
         <div className="my-2 flex justify-center align-middle">
           <button
             type="submit"
-            className="min-w-14 w-fit border-slate-100 bg-slate-300 p-2 hover:bg-slate-400 dark:border-slate-700 dark:bg-slate-600"
+            className="min-w-14 w-fit border border-slate-100 bg-slate-300 p-2 hover:bg-slate-400 dark:border-slate-700 dark:bg-slate-600"
             disabled={isLoading}
           >
             Make it so!
