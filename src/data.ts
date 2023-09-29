@@ -49,8 +49,13 @@ export function useGetUserQuery(userIdParam: string) {
   return query
 }
 
-export function useCreateUserMutation() {
+export function useCreateUserMutation(params: UseCreateUserMutationParams = {}) {
   return useMutation<PostUserSuccess, PostUserBadInputError, PostUserParams>({
     mutationFn: (params: PostUserParams) => postUser(params),
+    onSuccess: params.onSuccess,
   })
+}
+
+export type UseCreateUserMutationParams = {
+  onSuccess?: () => void
 }

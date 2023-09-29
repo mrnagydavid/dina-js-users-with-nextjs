@@ -1,27 +1,49 @@
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
 import { useCreateUserMutation } from '@/data'
+import LoadingIndicator from '@/components/LoadingIndicator'
+import SuccessIndicator from '@/components/SuccessIndicator'
 
 export default function AddUserPage() {
+  const [showSuccessIndicator, setShowSuccessIndicator] = useState(false)
+  const successIndicatorTimerRef = useRef<NodeJS.Timeout | null>(null)
+
   const form = useForm<UserFormSchema>({
     resolver: zodResolver(userFormSchema),
   })
 
-  const createUserMutation = useCreateUserMutation()
+  const createUserMutation = useCreateUserMutation({
+    onSuccess: () => {
+      setShowSuccessIndicator(true)
+      successIndicatorTimerRef.current = setTimeout(() => {
+        setShowSuccessIndicator(false)
+      }, 1500)
+    },
+  })
+
+  useEffect(() => {
+    return () => {
+      if (successIndicatorTimerRef.current) {
+        clearTimeout(successIndicatorTimerRef.current)
+      }
+    }
+  }, [successIndicatorTimerRef])
 
   function handleSubmit(params: UserFormSchema) {
     createUserMutation.mutate(params)
+    form.reset()
   }
 
   return (
     <>
-      {createUserMutation.isLoading && <div>Working...</div>}
-      {createUserMutation.isSuccess && <div>Success</div>}
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="relative m-2 overflow-hidden rounded-lg border border-slate-100 dark:border-slate-900 md:w-3/4 lg:w-1/2">
+          {createUserMutation.isLoading && <LoadingIndicator className="absolute left-0 right-0 m-auto mt-8" />}
+          {showSuccessIndicator && <SuccessIndicator className="absolute left-0 right-0 m-auto mt-8" />}
           <table className="w-full table-fixed">
             <thead className="border-b-2 bg-slate-400 dark:bg-slate-800">
               <tr>

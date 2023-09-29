@@ -1,17 +1,26 @@
 'use client'
-import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { User } from '@/api'
-import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator'
+import LoadingIndicator from '@/components/LoadingIndicator'
 import { useGetUsersQuery } from '@/data'
 
 export default function UsersPage() {
-  const [page, setPage] = useState(1)
+  const router = useRouter()
+
+  const searchParams = useSearchParams()
+  const queryParamPageString = searchParams.get('page')
+  const page = parseInt(queryParamPageString ?? '1')
+
   const { data, isLoading, isPreviousData } = useGetUsersQuery({ page })
 
   const users = data?.data ?? []
   const meta = data?.meta ?? { count: 1, page_size: 10 }
   const pageCount = Math.ceil(meta.count / meta.page_size)
+
+  function handlePageChange(requestedPage: number) {
+    router.push(`/users?page=${requestedPage}`)
+  }
 
   return (
     <>
@@ -53,7 +62,7 @@ export default function UsersPage() {
         itemClassName="w-12 h-12 flex items-center justify-center cursor-pointer"
         breakClassName="w-12 h-12 flex items-center justify-center"
         currentPageItemClassName="font-bold"
-        handlePageChange={(requestedPage) => setPage(requestedPage)}
+        handlePageChange={handlePageChange}
       />
 
       <div className="mt-2 flex justify-center align-middle md:w-3/4 lg:w-1/2">
@@ -68,82 +77,87 @@ export default function UsersPage() {
       </div>
     </>
   )
+}
 
-  function User(props: UserProps) {
-    const { key, user } = props
+function User(props: UserProps) {
+  const { user } = props
+  const router = useRouter()
 
-    return (
-      <tr key={key} className="bg-slate-300 hover:bg-slate-400 dark:bg-slate-600">
-        <td className="p-2 text-left">{user.last_name}</td>
-        <td className="p-2 text-left">{user.first_name}</td>
-        <td className="p-2 text-left">{user.created_at}</td>
-      </tr>
-    )
-  }
+  return (
+    <tr
+      key={'user' + user.id}
+      className="cursor-pointer bg-slate-300 hover:bg-slate-400 dark:bg-slate-600"
+      onClick={() => router.push('/users/' + user.id)}
+    >
+      <td className="p-2 text-left">{user.last_name}</td>
+      <td className="p-2 text-left">{user.first_name}</td>
+      <td className="p-2 text-left">{user.created_at}</td>
+    </tr>
+  )
+}
 
-  type UserProps = {
-    key: string
-    user: User
-  }
+type UserProps = {
+  key: string
+  user: User
+}
 
-  function Paginator(props: PaginatorProps) {
-    const {
-      pageCount,
-      currentPage,
-      containerClassName,
-      stepperClassName,
-      itemClassName,
-      breakClassName,
-      currentPageItemClassName,
-      handlePageChange,
-    } = props
+function Paginator(props: PaginatorProps) {
+  const {
+    pageCount,
+    currentPage,
+    containerClassName,
+    stepperClassName,
+    itemClassName,
+    breakClassName,
+    currentPageItemClassName,
+    handlePageChange,
+  } = props
 
-    const previousPage = Math.max(1, currentPage - 1)
-    const nextPage = Math.min(pageCount, currentPage + 1)
+  const previousPage = Math.max(1, currentPage - 1)
+  const nextPage = Math.min(pageCount, currentPage + 1)
 
-    const PageNumberComponents = []
+  const PageNumberComponents = []
 
-    for (let i = 1; i <= pageCount; i++) {
-      if (i === 1 || i === pageCount || (i >= currentPage - 2 && i <= currentPage + 2)) {
-        const className = currentPage === i ? `${itemClassName} ${currentPageItemClassName}` : itemClassName
+  for (let i = 1; i <= pageCount; i++) {
+    if (i === 1 || i === pageCount || (i >= currentPage - 2 && i <= currentPage + 2)) {
+      const className = currentPage === i ? `${itemClassName} ${currentPageItemClassName}` : itemClassName
 
-        PageNumberComponents.push(
-          <div key={`page-${i}`} className={className} onClick={() => handlePageChange(i)}>
-            {i}
-          </div>,
-        )
-      } else if (i === currentPage - 3 || i === currentPage + 3) {
-        PageNumberComponents.push(
-          <div key={`page-break-${i}`} className={breakClassName}>
-            ...
-          </div>,
-        )
-      }
+      PageNumberComponents.push(
+        <div key={`page-${i}`} className={className} onClick={() => handlePageChange(i)}>
+          {i}
+        </div>,
+      )
+    } else if (i === currentPage - 3 || i === currentPage + 3) {
+      PageNumberComponents.push(
+        <div key={`page-break-${i}`} className={breakClassName}>
+          ...
+        </div>,
+      )
     }
+  }
 
-    return (
-      <div className={containerClassName}>
-        <div key={`page-back`} className={stepperClassName} onClick={() => handlePageChange(previousPage)}>
-          &lt;
-        </div>
-
-        {PageNumberComponents}
-
-        <div key={`page-next`} className={stepperClassName} onClick={() => handlePageChange(nextPage)}>
-          &gt;
-        </div>
+  return (
+    <div className={containerClassName}>
+      <div key={`page-back`} className={stepperClassName} onClick={() => handlePageChange(previousPage)}>
+        &lt;
       </div>
-    )
-  }
 
-  type PaginatorProps = {
-    pageCount: number
-    currentPage: number
-    containerClassName: string
-    stepperClassName: string
-    itemClassName: string
-    breakClassName: string
-    currentPageItemClassName: string
-    handlePageChange: (requestedPage: number) => void
-  }
+      {PageNumberComponents}
+
+      <div key={`page-next`} className={stepperClassName} onClick={() => handlePageChange(nextPage)}>
+        &gt;
+      </div>
+    </div>
+  )
+}
+
+type PaginatorProps = {
+  pageCount: number
+  currentPage: number
+  containerClassName: string
+  stepperClassName: string
+  itemClassName: string
+  breakClassName: string
+  currentPageItemClassName: string
+  handlePageChange: (requestedPage: number) => void
 }

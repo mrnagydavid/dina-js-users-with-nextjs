@@ -1,6 +1,6 @@
 'use client'
 
-import LoadingIndicator from '@/components/LoadingIndicator/LoadingIndicator'
+import LoadingIndicator from '@/components/LoadingIndicator'
 import { useGetUserQuery } from '@/data'
 
 export default function UserPage(props: UserPageProps) {
