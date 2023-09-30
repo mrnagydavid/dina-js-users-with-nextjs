@@ -9,9 +9,10 @@ import UserEditorForm, { UserFormSchema } from '@/components/UserEditorForm'
 import { User } from '@/api'
 
 export default function AddUserPage() {
-  const router = useRouter()
   const [showSuccessIndicator, setShowSuccessIndicator] = useState(false)
   const successIndicatorTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  const router = useRouter()
 
   const createUserMutation = useCreateUserMutation({
     onSuccess: (user: User) => {

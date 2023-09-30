@@ -11,22 +11,22 @@ export default function EditUserPage(props: EditUserPageProps) {
   const { userId: userIdParam } = props.params
   const userId = parseInt(userIdParam)
 
-  const router = useRouter()
-
   if (isNaN(userId)) {
     notFound()
   }
 
-  const userQuery = useGetUserQuery(userId)
   const [showSuccessIndicator, setShowSuccessIndicator] = useState(false)
   const successIndicatorTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  const router = useRouter()
+  const userQuery = useGetUserQuery(userId)
 
   const updateUserMutation = useUpdateUserMutation({
     onSuccess: () => {
       setShowSuccessIndicator(true)
       successIndicatorTimerRef.current = setTimeout(() => {
         setShowSuccessIndicator(false)
-        router.push(`/users/${userId}`)
+        router.back()
       }, 1500)
     },
   })

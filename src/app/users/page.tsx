@@ -7,14 +7,15 @@ import LoadingIndicator from '@/components/LoadingIndicator'
 import { useGetUsersQuery, useUpdateUserMutation } from '@/data'
 
 export default function UsersPage() {
-  const router = useRouter()
-
   const searchParams = useSearchParams()
   const queryParamPageString = searchParams.get('page')
   const page = parseInt(queryParamPageString ?? '1')
 
+  const router = useRouter()
+
   const queryClient = useQueryClient()
   const usersQuery = useGetUsersQuery({ page })
+
   const updateUserMutation = useUpdateUserMutation({
     onSuccess: (user: User) => {
       queryClient.invalidateQueries({ queryKey: ['users', page] })
@@ -29,6 +30,7 @@ export default function UsersPage() {
   function handlePageChange(requestedPage: number) {
     router.push(`/users?page=${requestedPage}`)
   }
+
   function handleRowClick(userId: number) {
     router.push('/users/' + userId)
   }

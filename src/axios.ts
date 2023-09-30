@@ -1,7 +1,6 @@
 import axiosModule, { AxiosError, AxiosInstance, AxiosRequestConfig, isAxiosError } from 'axios'
-import { useRouter } from 'next/navigation'
 
-let axios = axiosModule.create()
+const axios = axiosModule.create()
 
 export default {
   get: (url: string, config?: AxiosRequestConfig<any>) => getWrapper(axios, url, config),
@@ -58,7 +57,11 @@ async function putWrapper(axios: AxiosInstance, url: string, data?: any, config?
 }
 
 function handleAxiosError(error: AxiosError<any>) {
-  let axiosError = error as AxiosError<any>
+  const axiosError = error as AxiosError<any>
+
+  if (!axiosError.response) {
+    throw axiosError
+  }
 
   if (axiosError.response?.status === 400) {
     const error = parseBadInputError(axiosError.response?.data)
